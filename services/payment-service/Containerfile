@@ -1,0 +1,9 @@
+FROM eclipse-temurin:21-jre
+
+WORKDIR /app
+
+COPY target/payment-service.jar payment.jar
+
+EXPOSE 7070
+
+ENTRYPOINT ["java","-jar","payment.jar"]
