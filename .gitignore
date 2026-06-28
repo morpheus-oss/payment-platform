@@ -1,2 +1,9 @@
-# IDE folders and files
+# Maven
+target/
+
+# IntelliJ IDEA
 .idea/**
+*.iml
+
+# Linux
+*~
