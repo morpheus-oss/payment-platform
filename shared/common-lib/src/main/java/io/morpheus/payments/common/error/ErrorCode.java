@@ -1,10 +1,17 @@
 package io.morpheus.payments.common.error;
 
-public enum ErrorCode {
-    WALLET_NOT_FOUND,
-    INSUFFICIENT_FUNDS,
-    INVALID_TRANSFER,
-    DUPLICATE_TRANSACTION,
-    FRAUD_DETECTED,
-    INTERNAL_ERROR
+/**
+ * Represents a stable platform error.
+ *
+ * <p>Error codes are immutable identifiers that remain stable over
+ * time and can safely be exposed through APIs, logs and metrics.
+ */
+public interface ErrorCode {
+
+    String code();
+
+    String message();
+
+    ErrorCategory category();
+
 }
