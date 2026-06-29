@@ -18,16 +18,17 @@ public final class Wallet {
 
     private Money balance;
 
-    public Wallet(final WalletId id,
-                  final Currency currency) {
-        this(id, Money.zero(currency));
-    }
-
-    public Wallet(final WalletId id,
-                  final Money openingBalance) {
+    private Wallet(final WalletId id,
+                   final Money openingBalance) {
         this.id = Objects.requireNonNull(id, "id must not be null");
         this.balance = Objects.requireNonNull(openingBalance, "openingBalance must not be null");
     }
+
+    public static Wallet from(final WalletId id,
+                              final Money openingBalance) {
+        return new Wallet(id, openingBalance);
+    }
+
 
     public WalletId id() {
         return id;
