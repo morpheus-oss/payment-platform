@@ -1,15 +1,16 @@
-package io.morpheus.payments.payment.transfer;
+package io.morpheus.payments.payment.domain.transfer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.morpheus.payments.common.exception.InsufficientFundsException;
 import io.morpheus.payments.common.exception.ResourceNotFoundException;
 import io.morpheus.payments.events.envelope.EventTypes;
 import io.morpheus.payments.events.types.MoneyTransferredEvent;
+import io.morpheus.payments.payment.application.port.WalletPersistencePort;
+import io.morpheus.payments.payment.domain.wallet.Wallet;
 import io.morpheus.payments.payment.persistence.entity.IdempotencyEntity;
 import io.morpheus.payments.payment.persistence.repository.IdempotencyRepository;
 import io.morpheus.payments.payment.persistence.entity.OutboxEventEntity;
-import io.morpheus.payments.payment.outbox.OutboxStatus;
+import io.morpheus.payments.payment.domain.outbox.OutboxStatus;
 import io.morpheus.payments.payment.persistence.entity.TransferEntity;
 import io.morpheus.payments.payment.persistence.entity.WalletEntity;
 import io.morpheus.payments.payment.persistence.repository.OutboxEventRepository;
@@ -31,7 +32,8 @@ public class TransferService {
 
     private static final Logger logger = LoggerFactory.getLogger(TransferService.class);
 
-    private final WalletRepository walletRepository;
+    private final WalletPersistencePort walletPersistencePort;
+
     private final TransferRepository transferRepository;
     private final OutboxEventRepository outboxRepository;
     private final IdempotencyRepository idempotencyRepository;
@@ -39,42 +41,55 @@ public class TransferService {
     private final ObjectMapper objectMapper;
 
     @Transactional
-    public TransferResponse transfer(String idempotencyKey, TransferRequest request) throws JsonProcessingException {
-
-        Optional<IdempotencyEntity> existing = idempotencyRepository.findByIdempotencyKey(idempotencyKey);
-
-        if (existing.isPresent()) {
-            return new TransferResponse(existing.get().getTransferId());
-        }
-
-        WalletEntity source = walletRepository.findById(request.sourceWalletId())
-                                              .orElseThrow(() ->
-                                                      new ResourceNotFoundException("Source wallet not found"));
-
-        WalletEntity destination = walletRepository.findById(request.destinationWalletId())
-                                                   .orElseThrow(() ->
-                                                      new ResourceNotFoundException("Destination wallet not found"));
+    public TransferResponse transfer(Wallet source, Wallet destination, TransferRequest request)    {
 
         if (!source.hasSufficientFunds(request.amount())) {
             throw new InsufficientFundsException("Insufficient funds");
         }
 
-        source.debit(request.amount());
-        destination.credit(request.amount());
+        source.withdraw(request.amount());
+        destination.deposit(request.amount());
 
-        walletRepository.save(source);
-        walletRepository.save(destination);
+        walletPersistencePort.save(source);
+        walletPersistencePort.save(destination);
 
         TransferEntity transfer = createTransfer(request);
 
         transferRepository.save(transfer);
 
-        createOutboxEvent(transfer);
+        try {
+            createOutboxEvent(transfer);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         saveIdempotencyRecord(idempotencyKey, transfer.getId());
 
         return new TransferResponse(transfer.getId());
+    }
 
+    public Wallet loadSourceWallet(TransferRequest request) {
+
+        return walletPersistencePort.findById(request.sourceWalletId())
+                               .orElseThrow(() ->
+                                       new ResourceNotFoundException("Source wallet not found"));
+
+    }
+
+    public Wallet loadDestinationWallet(TransferRequest request) {
+
+        return walletPersistencePort.findById(request.destinationWalletId())
+                               .orElseThrow(() ->
+                                       new ResourceNotFoundException("Destination wallet not found"));
+    }
+
+
+    public TransferResponse validateIdempotency(final TransferRequest request) {
+        Optional<IdempotencyEntity> existing = idempotencyRepository.findByIdempotencyKey(idempotencyKey);
+
+        return existing
+                .map(entity -> new TransferResponse(entity.getTransferId()))
+                .orElse(null);
     }
 
     private void saveIdempotencyRecord(String idempotencyKey, UUID transferId) {

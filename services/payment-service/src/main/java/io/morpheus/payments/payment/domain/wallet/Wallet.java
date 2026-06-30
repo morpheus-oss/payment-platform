@@ -2,8 +2,9 @@ package io.morpheus.payments.payment.domain.wallet;
 
 import io.morpheus.payments.payment.domain.shared.Money;
 import io.morpheus.payments.payment.exception.domain.InsufficientFundsException;
+import jakarta.validation.constraints.Positive;
 
-import java.util.Currency;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -38,28 +39,17 @@ public final class Wallet {
         return balance;
     }
 
-    public void deposit(final Money amount) {
-        requirePositive(amount);
-
+    public void deposit(final @Positive Money amount) {
         balance = balance.add(amount);
     }
 
-    public void withdraw(final Money amount) {
-        requirePositive(amount);
+    public void withdraw(final @Positive BigDecimal amount) {
 
         if (balance.compareTo(amount) < 0) {
             throw new InsufficientFundsException();
         }
 
         balance = balance.subtract(amount);
-    }
-
-    private static void requirePositive(final Money amount) {
-        Objects.requireNonNull(amount, "amount must not be null");
-
-        if (!amount.isPositive()) {
-            throw new IllegalArgumentException("Amount must be greater than zero.");
-        }
     }
 
 }

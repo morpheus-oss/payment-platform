@@ -1,8 +1,7 @@
 package io.morpheus.payments.payment.persistence.entity;
 
-import io.morpheus.payments.payment.transfer.TransferStatus;
+import io.morpheus.payments.payment.domain.transfer.TransferStatus;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

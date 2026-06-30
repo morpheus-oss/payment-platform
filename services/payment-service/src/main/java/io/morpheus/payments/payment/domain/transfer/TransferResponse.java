@@ -1,4 +1,4 @@
-package io.morpheus.payments.payment.transfer;
+package io.morpheus.payments.payment.domain.transfer;
 
 import java.util.UUID;
 

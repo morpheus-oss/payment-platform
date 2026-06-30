@@ -1,4 +1,4 @@
-package io.morpheus.payments.payment.wallet;
+package io.morpheus.payments.payment.domain.wallet;
 
 import io.morpheus.payments.payment.persistence.entity.WalletEntity;
 import org.springframework.stereotype.Component;

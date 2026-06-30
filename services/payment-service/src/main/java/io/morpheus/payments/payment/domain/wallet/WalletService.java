@@ -1,6 +1,5 @@
-package io.morpheus.payments.payment.wallet;
+package io.morpheus.payments.payment.domain.wallet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.morpheus.payments.common.exception.ResourceNotFoundException;
 import io.morpheus.payments.payment.persistence.entity.WalletEntity;
 import io.morpheus.payments.payment.persistence.repository.WalletRepository;
@@ -20,7 +19,7 @@ public class WalletService {
     private final WalletMapper walletMapper;
 
     @Transactional
-    public WalletResponse create(WalletRequest request) {
+    public WalletResponse create(Wallet request) {
 
         WalletEntity wallet = new WalletEntity();
         wallet.setId(UUID.randomUUID());

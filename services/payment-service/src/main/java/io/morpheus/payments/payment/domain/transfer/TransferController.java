@@ -1,6 +1,7 @@
-package io.morpheus.payments.payment.transfer;
+package io.morpheus.payments.payment.domain.transfer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.morpheus.payments.payment.application.transfer.TransferUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class TransferController {
 
-    private final TransferService transferService;
+    private final TransferUseCase transferUseCase;
 
     @Operation (summary = "Transfer money between wallets")
     @PostMapping
@@ -21,6 +22,7 @@ public class TransferController {
                             @Valid
                             @RequestBody
                             TransferRequest request) throws JsonProcessingException {
-        return transferService.transfer(idempotencyKey, request);
+//        return transferService.transfer(idempotencyKey, request);
+        return transferUseCase.execute(request);
     }
 }

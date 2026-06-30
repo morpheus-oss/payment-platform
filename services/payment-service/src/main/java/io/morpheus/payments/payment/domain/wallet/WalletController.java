@@ -1,4 +1,4 @@
-package io.morpheus.payments.payment.wallet;
+package io.morpheus.payments.payment.domain.wallet;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -19,7 +19,7 @@ public class WalletController {
     @Operation(summary = "Create a wallet")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public WalletResponse create(@Valid @RequestBody WalletRequest request) {
+    public WalletResponse create(@Valid @RequestBody Wallet request) {
         return walletService.create(request);
     }
 
