@@ -7,7 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IdempotencyRepository extends JpaRepository<IdempotencyEntity, UUID> {
+public interface IdempotencyRepository extends JpaRepository<IdempotencyEntity, UUID>
+{
 
-  Optional<IdempotencyEntity> findByIdempotencyKey(String idempotencyKey);
+	Optional<IdempotencyEntity> findByIdempotencyKey(String idempotencyKey);
 }

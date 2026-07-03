@@ -8,13 +8,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RabbitCloudEventPublisher implements CloudEventPublisher {
+public class RabbitCloudEventPublisher implements CloudEventPublisher
+{
 
-  private final RabbitTemplate rabbitTemplate;
+	private final RabbitTemplate rabbitTemplate;
 
-  @Override
-  public void publish(String routingKey, CloudEvent event) {
+	@Override
+	public void publish(String routingKey, CloudEvent event)
+	{
 
-    rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE, routingKey, event);
-  }
+		rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE, routingKey, event);
+	}
 }

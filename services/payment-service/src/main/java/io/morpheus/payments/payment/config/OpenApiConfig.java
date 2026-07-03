@@ -6,10 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class OpenApiConfig {
+public class OpenApiConfig
+{
 
-  @Bean
-  OpenAPI paymentApi() {
-    return new OpenAPI().info(new Info().title("Payment Service API").version("v1"));
-  }
+	@Bean
+	OpenAPI paymentApi()
+	{
+		return new OpenAPI().info(new Info().title("Payment Service API").version("v1"));
+	}
 }

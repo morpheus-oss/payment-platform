@@ -8,21 +8,25 @@ import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 @Component
-public class WalletPersistenceAdapter implements WalletPersistencePort {
+public class WalletPersistenceAdapter implements WalletPersistencePort
+{
 
-  private final WalletRepository walletRepository;
+	private final WalletRepository walletRepository;
 
-  public WalletPersistenceAdapter(final WalletRepository walletRepository) {
-    this.walletRepository = walletRepository;
-  }
+	public WalletPersistenceAdapter(final WalletRepository walletRepository)
+	{
+		this.walletRepository = walletRepository;
+	}
 
-  @Override
-  public Optional<WalletEntity> findById(final UUID walletId) {
-    return walletRepository.findById(walletId);
-  }
+	@Override
+	public Optional<WalletEntity> findById(final UUID walletId)
+	{
+		return walletRepository.findById(walletId);
+	}
 
-  @Override
-  public WalletEntity save(final WalletEntity wallet) {
-    return walletRepository.save(wallet);
-  }
+	@Override
+	public WalletEntity save(final WalletEntity wallet)
+	{
+		return walletRepository.save(wallet);
+	}
 }

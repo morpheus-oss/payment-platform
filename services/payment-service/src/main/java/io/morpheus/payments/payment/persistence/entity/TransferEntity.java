@@ -14,18 +14,20 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TransferEntity {
+public class TransferEntity
+{
 
-  @Id private UUID id;
+	@Id
+	private UUID id;
 
-  private UUID sourceWalletId;
+	private UUID sourceWalletId;
 
-  private UUID destinationWalletId;
+	private UUID destinationWalletId;
 
-  private BigDecimal amount;
+	private BigDecimal amount;
 
-  @Enumerated(EnumType.STRING)
-  private TransferStatus status;
+	@Enumerated(EnumType.STRING)
+	private TransferStatus status;
 
-  private Instant createdAt;
+	private Instant createdAt;
 }

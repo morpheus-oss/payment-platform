@@ -7,10 +7,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class RabbitMessageConfig {
+public class RabbitMessageConfig
+{
 
-  @Bean
-  MessageConverter messageConverter(ObjectMapper objectMapper) {
-    return new Jackson2JsonMessageConverter(objectMapper);
-  }
+	@Bean
+	MessageConverter messageConverter(ObjectMapper objectMapper)
+	{
+		return new Jackson2JsonMessageConverter(objectMapper);
+	}
 }

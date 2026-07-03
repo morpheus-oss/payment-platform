@@ -11,30 +11,31 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 @Transactional
-public class WalletService {
+public class WalletService
+{
 
-  private final WalletRepository walletRepository;
+	private final WalletRepository walletRepository;
 
-  private final WalletMapper walletMapper;
+	private final WalletMapper walletMapper;
 
-  @Transactional
-  public WalletResponse create(Wallet request) {
+	@Transactional
+	public WalletResponse create(Wallet request)
+	{
 
-    WalletEntity wallet = new WalletEntity();
-    wallet.setId(UUID.randomUUID());
-    wallet.setOwnerId(request.ownerId());
-    wallet.setBalance(request.initialBalance());
+		WalletEntity wallet = new WalletEntity();
+		wallet.setId(UUID.randomUUID());
+		wallet.setOwnerId(request.ownerId());
+		wallet.setBalance(request.initialBalance());
 
-    walletRepository.save(wallet);
+		walletRepository.save(wallet);
 
-    return walletMapper.toResponse(wallet);
-  }
+		return walletMapper.toResponse(wallet);
+	}
 
-  @Transactional(readOnly = true)
-  public WalletResponse get(UUID walletId) {
-    return walletMapper.toResponse(
-        walletRepository
-            .findById(walletId)
-            .orElseThrow(() -> new ResourceNotFoundException("Wallet not found")));
-  }
+	@Transactional(readOnly = true)
+	public WalletResponse get(UUID walletId)
+	{
+		return walletMapper.toResponse(
+				walletRepository.findById(walletId).orElseThrow(() -> new ResourceNotFoundException("Wallet not found")));
+	}
 }

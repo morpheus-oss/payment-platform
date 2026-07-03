@@ -12,13 +12,14 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class AuditableEntity {
+public abstract class AuditableEntity
+{
 
-  @CreatedDate
-  @Column(nullable = false, updatable = false)
-  private Instant createdAt;
+	@CreatedDate
+	@Column(nullable = false, updatable = false)
+	private Instant createdAt;
 
-  @LastModifiedDate
-  @Column(nullable = false)
-  private Instant updatedAt;
+	@LastModifiedDate
+	@Column(nullable = false)
+	private Instant updatedAt;
 }

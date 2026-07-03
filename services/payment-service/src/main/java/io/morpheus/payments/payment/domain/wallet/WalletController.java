@@ -10,20 +10,23 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/wallets")
 @RequiredArgsConstructor
-public class WalletController {
+public class WalletController
+{
 
-  private final WalletService walletService;
+	private final WalletService walletService;
 
-  @Operation(summary = "Create a wallet")
-  @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  public WalletResponse create(@Valid @RequestBody Wallet request) {
-    return walletService.create(request);
-  }
+	@Operation(summary = "Create a wallet")
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	public WalletResponse create(@Valid @RequestBody Wallet request)
+	{
+		return walletService.create(request);
+	}
 
-  @Operation(summary = "Get wallet with {walletId}.")
-  @GetMapping("/{walletId}")
-  public WalletResponse get(@PathVariable UUID walletId) {
-    return walletService.get(walletId);
-  }
+	@Operation(summary = "Get wallet with {walletId}.")
+	@GetMapping("/{walletId}")
+	public WalletResponse get(@PathVariable UUID walletId)
+	{
+		return walletService.get(walletId);
+	}
 }

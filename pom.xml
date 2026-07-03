@@ -37,6 +37,9 @@
     <java.version>21</java.version>
     <spring.boot.version>3.5.14</spring.boot.version>
 
+    <!--  ArchUnit Plugin   -->
+    <archunit.version>1.4.1</archunit.version>
+
     <!-- Build Properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -48,6 +51,7 @@
     <maven.failsafe.plugin.version>3.5.3</maven.failsafe.plugin.version>
     <maven.enforcer.plugin.version>3.6.1</maven.enforcer.plugin.version>
 
+    <!--  Quality Plugins     -->
     <spotless.maven.plugin.version>2.44.4</spotless.maven.plugin.version>
     <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
   </properties>
@@ -131,7 +135,10 @@
 
           <configuration>
             <java>
-              <googleJavaFormat/>
+              <eclipse>
+                <file>build/format/java-formatter.xml</file>
+              </eclipse>
+
               <removeUnusedImports/>
               <trimTrailingWhitespace/>
               <endWithNewline/>

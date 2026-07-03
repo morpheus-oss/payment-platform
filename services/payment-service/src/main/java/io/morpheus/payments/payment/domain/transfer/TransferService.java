@@ -25,108 +25,110 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class TransferService {
+public class TransferService
+{
 
-  private static final Logger logger = LoggerFactory.getLogger(TransferService.class);
+	private static final Logger logger = LoggerFactory.getLogger(TransferService.class);
 
-  private final WalletPersistencePort walletPersistencePort;
+	private final WalletPersistencePort walletPersistencePort;
 
-  private final TransferRepository transferRepository;
-  private final OutboxEventRepository outboxRepository;
-  private final IdempotencyRepository idempotencyRepository;
+	private final TransferRepository transferRepository;
+	private final OutboxEventRepository outboxRepository;
+	private final IdempotencyRepository idempotencyRepository;
 
-  private final ObjectMapper objectMapper;
+	private final ObjectMapper objectMapper;
 
-  @Transactional
-  public TransferResponse transfer(Wallet source, Wallet destination, TransferRequest request) {
+	@Transactional
+	public TransferResponse transfer(Wallet source, Wallet destination, TransferRequest request)
+	{
 
-    if (!source.hasSufficientFunds(request.amount())) {
-      throw new InsufficientFundsException("Insufficient funds");
-    }
+		if (!source.hasSufficientFunds(request.amount()))
+		{ throw new InsufficientFundsException("Insufficient funds"); }
 
-    source.withdraw(request.amount());
-    destination.deposit(request.amount());
+		source.withdraw(request.amount());
+		destination.deposit(request.amount());
 
-    walletPersistencePort.save(source);
-    walletPersistencePort.save(destination);
+		walletPersistencePort.save(source);
+		walletPersistencePort.save(destination);
 
-    TransferEntity transfer = createTransfer(request);
+		TransferEntity transfer = createTransfer(request);
 
-    transferRepository.save(transfer);
+		transferRepository.save(transfer);
 
-    try {
-      createOutboxEvent(transfer);
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException(e);
-    }
+		try
+		{
+			createOutboxEvent(transfer);
+		}
+		catch (JsonProcessingException e)
+		{
+			throw new RuntimeException(e);
+		}
 
-    saveIdempotencyRecord(idempotencyKey, transfer.getId());
+		saveIdempotencyRecord(idempotencyKey, transfer.getId());
 
-    return new TransferResponse(transfer.getId());
-  }
+		return new TransferResponse(transfer.getId());
+	}
 
-  public Wallet loadSourceWallet(TransferRequest request) {
+	public Wallet loadSourceWallet(TransferRequest request)
+	{
 
-    return walletPersistencePort
-        .findById(request.sourceWalletId())
-        .orElseThrow(() -> new ResourceNotFoundException("Source wallet not found"));
-  }
+		return walletPersistencePort.findById(request.sourceWalletId())
+				.orElseThrow(() -> new ResourceNotFoundException("Source wallet not found"));
+	}
 
-  public Wallet loadDestinationWallet(TransferRequest request) {
+	public Wallet loadDestinationWallet(TransferRequest request)
+	{
 
-    return walletPersistencePort
-        .findById(request.destinationWalletId())
-        .orElseThrow(() -> new ResourceNotFoundException("Destination wallet not found"));
-  }
+		return walletPersistencePort.findById(request.destinationWalletId())
+				.orElseThrow(() -> new ResourceNotFoundException("Destination wallet not found"));
+	}
 
-  public TransferResponse validateIdempotency(final TransferRequest request) {
-    Optional<IdempotencyEntity> existing =
-        idempotencyRepository.findByIdempotencyKey(idempotencyKey);
+	public TransferResponse validateIdempotency(final TransferRequest request)
+	{
+		Optional<IdempotencyEntity> existing = idempotencyRepository.findByIdempotencyKey(idempotencyKey);
 
-    return existing.map(entity -> new TransferResponse(entity.getTransferId())).orElse(null);
-  }
+		return existing.map(entity -> new TransferResponse(entity.getTransferId())).orElse(null);
+	}
 
-  private void saveIdempotencyRecord(String idempotencyKey, UUID transferId) {
-    IdempotencyEntity idempotency = new IdempotencyEntity();
-    idempotency.setId(UUID.randomUUID());
-    idempotency.setIdempotencyKey(idempotencyKey);
-    idempotency.setTransferId(transferId);
+	private void saveIdempotencyRecord(String idempotencyKey, UUID transferId)
+	{
+		IdempotencyEntity idempotency = new IdempotencyEntity();
+		idempotency.setId(UUID.randomUUID());
+		idempotency.setIdempotencyKey(idempotencyKey);
+		idempotency.setTransferId(transferId);
 
-    idempotencyRepository.save(idempotency);
-  }
+		idempotencyRepository.save(idempotency);
+	}
 
-  private TransferEntity createTransfer(TransferRequest request) {
+	private TransferEntity createTransfer(TransferRequest request)
+	{
 
-    TransferEntity transfer = new TransferEntity();
-    transfer.setId(UUID.randomUUID());
-    transfer.setSourceWalletId(request.sourceWalletId());
-    transfer.setDestinationWalletId(request.destinationWalletId());
-    transfer.setAmount(request.amount());
-    transfer.setStatus(TransferStatus.COMPLETED);
+		TransferEntity transfer = new TransferEntity();
+		transfer.setId(UUID.randomUUID());
+		transfer.setSourceWalletId(request.sourceWalletId());
+		transfer.setDestinationWalletId(request.destinationWalletId());
+		transfer.setAmount(request.amount());
+		transfer.setStatus(TransferStatus.COMPLETED);
 
-    return transfer;
-  }
+		return transfer;
+	}
 
-  private void createOutboxEvent(TransferEntity transfer) throws JsonProcessingException {
+	private void createOutboxEvent(TransferEntity transfer) throws JsonProcessingException
+	{
 
-    MoneyTransferredEvent event =
-        new MoneyTransferredEvent(
-            transfer.getId(),
-            transfer.getSourceWalletId(),
-            transfer.getDestinationWalletId(),
-            transfer.getAmount(),
-            Instant.now());
+		MoneyTransferredEvent event = new MoneyTransferredEvent(transfer.getId(), transfer.getSourceWalletId(),
+				transfer.getDestinationWalletId(), transfer.getAmount(), Instant.now());
 
-    String payload = objectMapper.writeValueAsString(event);
+		String payload = objectMapper.writeValueAsString(event);
 
-    OutboxEventEntity outbox = new OutboxEventEntity();
-    outbox.setId(UUID.randomUUID());
-    outbox.setAggregateId(transfer.getId());
-    outbox.setEventType(EventTypes.MONEY_TRANSFERRED);
-    outbox.setPayload(payload);
-    outbox.setStatus(OutboxStatus.PENDING);
-    outbox.setRetryCount(0);
+		OutboxEventEntity outbox = new OutboxEventEntity();
+		outbox.setId(UUID.randomUUID());
+		outbox.setAggregateId(transfer.getId());
+		outbox.setEventType(EventTypes.MONEY_TRANSFERRED);
+		outbox.setPayload(payload);
+		outbox.setStatus(OutboxStatus.PENDING);
+		outbox.setRetryCount(0);
 
-    outboxRepository.save(outbox);
-  }
+		outboxRepository.save(outbox);
+	}
 }

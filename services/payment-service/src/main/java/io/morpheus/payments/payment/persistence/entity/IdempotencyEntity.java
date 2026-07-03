@@ -11,17 +11,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(
-    name = "idempotency_keys",
-    uniqueConstraints = {@UniqueConstraint(columnNames = "idempotencyKey")})
+@Table(name = "idempotency_keys", uniqueConstraints = { @UniqueConstraint(columnNames = "idempotencyKey") })
 @Getter
 @Setter
 @NoArgsConstructor
-public class IdempotencyEntity extends AuditableEntity {
+public class IdempotencyEntity extends AuditableEntity
+{
 
-  @Id private UUID id;
+	@Id
+	private UUID id;
 
-  private String idempotencyKey;
+	private String idempotencyKey;
 
-  private UUID transferId;
+	private UUID transferId;
 }

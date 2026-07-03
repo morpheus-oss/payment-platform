@@ -13,27 +13,33 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class WalletEntity extends AuditableEntity {
+public class WalletEntity extends AuditableEntity
+{
 
-  @Id private UUID id;
+	@Id
+	private UUID id;
 
-  @Column(nullable = false)
-  private String ownerId;
+	@Column(nullable = false)
+	private String ownerId;
 
-  @Column(nullable = false, precision = 19, scale = 2)
-  private BigDecimal balance;
+	@Column(nullable = false, precision = 19, scale = 2)
+	private BigDecimal balance;
 
-  @Version private Long version;
+	@Version
+	private Long version;
 
-  public void debit(BigDecimal amount) {
-    balance = balance.subtract(amount);
-  }
+	public void debit(BigDecimal amount)
+	{
+		balance = balance.subtract(amount);
+	}
 
-  public void credit(BigDecimal amount) {
-    balance = balance.add(amount);
-  }
+	public void credit(BigDecimal amount)
+	{
+		balance = balance.add(amount);
+	}
 
-  public boolean hasSufficientFunds(BigDecimal amount) {
-    return balance.compareTo(amount) >= 0;
-  }
+	public boolean hasSufficientFunds(BigDecimal amount)
+	{
+		return balance.compareTo(amount) >= 0;
+	}
 }
