@@ -2,30 +2,28 @@ package io.morpheus.payments.payment.domain.wallet;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import lombok.RequiredArgsConstructor;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/wallets")
 @RequiredArgsConstructor
 public class WalletController {
 
-    private final WalletService walletService;
+  private final WalletService walletService;
 
-    @Operation(summary = "Create a wallet")
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public WalletResponse create(@Valid @RequestBody Wallet request) {
-        return walletService.create(request);
-    }
+  @Operation(summary = "Create a wallet")
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public WalletResponse create(@Valid @RequestBody Wallet request) {
+    return walletService.create(request);
+  }
 
-    @Operation(summary = "Get wallet with {walletId}.")
-    @GetMapping("/{walletId}")
-    public WalletResponse get(@PathVariable UUID walletId) {
-        return walletService.get(walletId);
-    }
+  @Operation(summary = "Get wallet with {walletId}.")
+  @GetMapping("/{walletId}")
+  public WalletResponse get(@PathVariable UUID walletId) {
+    return walletService.get(walletId);
+  }
 }

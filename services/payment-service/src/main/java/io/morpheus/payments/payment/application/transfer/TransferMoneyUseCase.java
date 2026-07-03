@@ -9,24 +9,23 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransferMoneyUseCase implements TransferUseCase {
 
-    private final TransferService transferService;
+  private final TransferService transferService;
 
-    public TransferMoneyUseCase(final TransferService transferService) {
-        this.transferService = transferService;
+  public TransferMoneyUseCase(final TransferService transferService) {
+    this.transferService = transferService;
+  }
+
+  @Override
+  public TransferResponse execute(final TransferRequest request) {
+
+    TransferResponse existingTransfer = transferService.validateIdempotency(request);
+    if (existingTransfer != null) {
+      return existingTransfer;
     }
 
-    @Override
-    public TransferResponse execute(final TransferRequest request) {
+    Wallet sourceWallet = transferService.loadSourceWallet(request);
+    Wallet destinationWallet = transferService.loadDestinationWallet(request);
 
-        TransferResponse existingTransfer = transferService.validateIdempotency(request);
-        if (existingTransfer != null) {
-            return existingTransfer;
-        }
-
-        Wallet sourceWallet = transferService.loadSourceWallet(request);
-        Wallet destinationWallet = transferService.loadDestinationWallet(request);
-
-        return transferService.transfer(sourceWallet, destinationWallet, request);
-    }
-
+    return transferService.transfer(sourceWallet, destinationWallet, request);
+  }
 }

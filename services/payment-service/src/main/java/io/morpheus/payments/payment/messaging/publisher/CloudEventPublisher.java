@@ -4,5 +4,5 @@ import io.cloudevents.CloudEvent;
 
 public interface CloudEventPublisher {
 
-    void publish(String routingKey, CloudEvent event);
+  void publish(String routingKey, CloudEvent event);
 }

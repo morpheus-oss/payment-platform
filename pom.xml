@@ -1,194 +1,189 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.morpheus.payments</groupId>
-    <artifactId>payment-platform</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+  <groupId>io.morpheus.payments</groupId>
+  <artifactId>payment-platform</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
 
-    <name>payment-platform</name>
-    <description>
-        Production-grade payment platform demonstrating modern backend architecture with Spring Boot microservices.
-    </description>
-    <url>https://github.com/morpheus-oss/payment-platform</url>
-    <inceptionYear>2026</inceptionYear>
+  <packaging>pom</packaging>
 
-    <packaging>pom</packaging>
+  <name>payment-platform</name>
+  <description>Production-grade payment platform demonstrating modern backend architecture with Spring Boot microservices.</description>
+  <url>https://github.com/morpheus-oss/payment-platform</url>
+  <inceptionYear>2026</inceptionYear>
 
-    <properties>
-        <!-- Development Plugins    -->
-        <java.version>21</java.version>
-        <spring.boot.version>3.5.14</spring.boot.version>
+  <licenses>
+    <license>
+      <name>Apache License 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
-        <!-- Build Properties -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.release>${java.version}</maven.compiler.release>
+  <modules>
+    <module>shared/common-lib</module>
+    <module>shared/event-contracts</module>
+    <module>shared/testing</module>
 
-        <!--    Build Plugins       -->
-        <maven.compiler.plugin.version>3.14.0</maven.compiler.plugin.version>
-        <maven.surefire.plugin.version>3.5.3</maven.surefire.plugin.version>
-        <maven.failsafe.plugin.version>3.5.3</maven.failsafe.plugin.version>
-        <maven.enforcer.plugin.version>3.6.1</maven.enforcer.plugin.version>
+    <module>services/payment-service</module>
+    <module>services/fraud-service</module>
+    <module>services/notification-service</module>
+  </modules>
 
+  <properties>
+    <!-- Development Plugins    -->
+    <java.version>21</java.version>
+    <spring.boot.version>3.5.14</spring.boot.version>
 
-        <spotless.maven.plugin.version>2.44.4</spotless.maven.plugin.version>
-        <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
-    </properties>
+    <!-- Build Properties -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.release>${java.version}</maven.compiler.release>
 
-    <licenses>
-        <license>
-            <name>Apache License 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+    <!--    Build Plugins       -->
+    <maven.compiler.plugin.version>3.14.0</maven.compiler.plugin.version>
+    <maven.surefire.plugin.version>3.5.3</maven.surefire.plugin.version>
+    <maven.failsafe.plugin.version>3.5.3</maven.failsafe.plugin.version>
+    <maven.enforcer.plugin.version>3.6.1</maven.enforcer.plugin.version>
 
-    <modules>
-        <module>shared/common-lib</module>
-        <module>shared/event-contracts</module>
-        <module>shared/testing</module>
+    <spotless.maven.plugin.version>2.44.4</spotless.maven.plugin.version>
+    <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
+  </properties>
 
-        <module>services/payment-service</module>
-        <module>services/fraud-service</module>
-        <module>services/notification-service</module>
-    </modules>
+  <dependencyManagement>
+    <dependencies>
 
-    <dependencyManagement>
-        <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring.boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
 
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring.boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+    </dependencies>
+  </dependencyManagement>
 
-        </dependencies>
-    </dependencyManagement>
+  <build>
+    <pluginManagement>
+      <plugins>
 
-    <build>
-        <pluginManagement>
-            <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven.compiler.plugin.version}</version>
 
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven.compiler.plugin.version}</version>
+          <configuration>
+            <release>${java.version}</release>
+            <parameters>true</parameters>
+          </configuration>
+        </plugin>
 
-                    <configuration>
-                        <release>${java.version}</release>
-                        <parameters>true</parameters>
-                    </configuration>
-                </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven.surefire.plugin.version}</version>
+        </plugin>
 
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven.surefire.plugin.version}</version>
-                </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${maven.failsafe.plugin.version}</version>
+        </plugin>
 
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>${maven.failsafe.plugin.version}</version>
-                </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>${maven.enforcer.plugin.version}</version>
 
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>${maven.enforcer.plugin.version}</version>
+          <executions>
+            <execution>
+              <id>enforce-build-environment</id>
 
-                    <executions>
-                        <execution>
-                            <id>enforce-build-environment</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
 
-                            <goals>
-                                <goal>enforce</goal>
-                            </goals>
+              <configuration>
+                <rules>
+                  <requireJavaVersion>
+                    <version>[21,)</version>
+                  </requireJavaVersion>
 
-                            <configuration>
-                                <rules>
-                                    <requireJavaVersion>
-                                        <version>[21,22)</version>
-                                    </requireJavaVersion>
+                  <requireMavenVersion>
+                    <version>[3.9.9,)</version>
+                  </requireMavenVersion>
+                </rules>
 
-                                    <requireMavenVersion>
-                                        <version>[3.9.9,)</version>
-                                    </requireMavenVersion>
-                                </rules>
+                <fail>true</fail>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
 
-                                <fail>true</fail>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
+        <!--    Spotless Plugin     -->
+        <plugin>
+          <groupId>com.diffplug.spotless</groupId>
+          <artifactId>spotless-maven-plugin</artifactId>
+          <version>${spotless.maven.plugin.version}</version>
 
-                <!--    Spotless Plugin     -->
-                <plugin>
-                    <groupId>com.diffplug.spotless</groupId>
-                    <artifactId>spotless-maven-plugin</artifactId>
-                    <version>${spotless.maven.plugin.version}</version>
+          <configuration>
+            <java>
+              <googleJavaFormat/>
+              <removeUnusedImports/>
+              <trimTrailingWhitespace/>
+              <endWithNewline/>
+            </java>
 
-                    <configuration>
-                        <java>
-                            <googleJavaFormat/>
-                            <removeUnusedImports/>
-                            <trimTrailingWhitespace/>
-                            <endWithNewline/>
-                        </java>
+            <pom>
+              <sortPom>
+                <expandEmptyElements>false</expandEmptyElements>
+              </sortPom>
+            </pom>
+          </configuration>
 
-                        <pom>
-                            <sortPom>
-                                <expandEmptyElements>false</expandEmptyElements>
-                            </sortPom>
-                        </pom>
-                    </configuration>
+          <executions>
+            <execution>
+              <id>spotless-check</id>
 
-                    <executions>
-                        <execution>
-                            <id>spotless-check</id>
-                            <phase>validate</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+              <phase>validate</phase>
+            </execution>
+          </executions>
+        </plugin>
 
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
+        <!-- Checkstyle plugin      -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${checkstyle.plugin.version}</version>
 
-                <!-- Checkstyle plugin      -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>${checkstyle.plugin.version}</version>
+          <configuration>
+            <configLocation>build/checkstyle/checkstyle.xml</configLocation>
+            <suppressionsLocation>build/checkstyle/suppressions.xml</suppressionsLocation>
+            <consoleOutput>true</consoleOutput>
+            <failsOnError>true</failsOnError>
+            <failOnViolation>true</failOnViolation>
+            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          </configuration>
 
-                    <configuration>
-                        <configLocation>build/checkstyle/checkstyle.xml</configLocation>
-                        <suppressionsLocation>build/checkstyle/suppressions.xml</suppressionsLocation>
-                        <consoleOutput>true</consoleOutput>
-                        <failsOnError>true</failsOnError>
-                        <failOnViolation>true</failOnViolation>
-                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                    </configuration>
+          <executions>
+            <execution>
+              <id>checkstyle-validation</id>
+              <goals>
+                <goal>check</goal>
+              </goals>
+              <phase>validate</phase>
+            </execution>
+          </executions>
+        </plugin>
 
-                    <executions>
-                        <execution>
-                            <id>checkstyle-validation</id>
-                            <phase>validate</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-
-            </plugins>
-        </pluginManagement>
-    </build>
+      </plugins>
+    </pluginManagement>
+  </build>
 
 </project>

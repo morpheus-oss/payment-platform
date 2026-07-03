@@ -8,11 +8,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class JacksonConfig {
 
-    @Bean
-    ObjectMapper objectMapper() {
+  @Bean
+  ObjectMapper objectMapper() {
 
-        return JsonMapper.builder()
-                         .findAndAddModules()
-                         .build();
-    }
+    return JsonMapper.builder().findAndAddModules().build();
+  }
 }

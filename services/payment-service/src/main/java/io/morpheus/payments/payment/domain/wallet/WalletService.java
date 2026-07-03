@@ -3,41 +3,38 @@ package io.morpheus.payments.payment.domain.wallet;
 import io.morpheus.payments.common.exception.ResourceNotFoundException;
 import io.morpheus.payments.payment.persistence.entity.WalletEntity;
 import io.morpheus.payments.payment.persistence.repository.WalletRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
 @Transactional
 public class WalletService {
 
-    private final WalletRepository walletRepository;
+  private final WalletRepository walletRepository;
 
-    private final WalletMapper walletMapper;
+  private final WalletMapper walletMapper;
 
-    @Transactional
-    public WalletResponse create(Wallet request) {
+  @Transactional
+  public WalletResponse create(Wallet request) {
 
-        WalletEntity wallet = new WalletEntity();
-        wallet.setId(UUID.randomUUID());
-        wallet.setOwnerId(request.ownerId());
-        wallet.setBalance(request.initialBalance());
+    WalletEntity wallet = new WalletEntity();
+    wallet.setId(UUID.randomUUID());
+    wallet.setOwnerId(request.ownerId());
+    wallet.setBalance(request.initialBalance());
 
-        walletRepository.save(wallet);
+    walletRepository.save(wallet);
 
-        return walletMapper.toResponse(wallet);
-    }
+    return walletMapper.toResponse(wallet);
+  }
 
-    @Transactional(readOnly = true)
-    public WalletResponse get(UUID walletId) {
-        return walletMapper.toResponse(
-                    walletRepository.findById(walletId)
-                                    .orElseThrow(
-                                        () -> new ResourceNotFoundException("Wallet not found")
-                                    ));
-
-    }
+  @Transactional(readOnly = true)
+  public WalletResponse get(UUID walletId) {
+    return walletMapper.toResponse(
+        walletRepository
+            .findById(walletId)
+            .orElseThrow(() -> new ResourceNotFoundException("Wallet not found")));
+  }
 }

@@ -12,17 +12,15 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class TransferController {
 
-    private final TransferUseCase transferUseCase;
+  private final TransferUseCase transferUseCase;
 
-    @Operation (summary = "Transfer money between wallets")
-    @PostMapping
-    public TransferResponse transfer(
-                            @RequestHeader("Idempotency-Key")
-                            String idempotencyKey,
-                            @Valid
-                            @RequestBody
-                            TransferRequest request) throws JsonProcessingException {
-//        return transferService.transfer(idempotencyKey, request);
-        return transferUseCase.execute(request);
-    }
+  @Operation(summary = "Transfer money between wallets")
+  @PostMapping
+  public TransferResponse transfer(
+      @RequestHeader("Idempotency-Key") String idempotencyKey,
+      @Valid @RequestBody TransferRequest request)
+      throws JsonProcessingException {
+    //        return transferService.transfer(idempotencyKey, request);
+    return transferUseCase.execute(request);
+  }
 }

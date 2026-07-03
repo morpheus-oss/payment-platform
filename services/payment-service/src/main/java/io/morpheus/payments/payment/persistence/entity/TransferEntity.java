@@ -2,13 +2,12 @@ package io.morpheus.payments.payment.persistence.entity;
 
 import io.morpheus.payments.payment.domain.transfer.TransferStatus;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "transfers")
@@ -17,17 +16,16 @@ import java.util.UUID;
 @NoArgsConstructor
 public class TransferEntity {
 
-    @Id
-    private UUID id;
+  @Id private UUID id;
 
-    private UUID sourceWalletId;
+  private UUID sourceWalletId;
 
-    private UUID destinationWalletId;
+  private UUID destinationWalletId;
 
-    private BigDecimal amount;
+  private BigDecimal amount;
 
-    @Enumerated(EnumType.STRING)
-    private TransferStatus status;
+  @Enumerated(EnumType.STRING)
+  private TransferStatus status;
 
-    private Instant createdAt;
+  private Instant createdAt;
 }

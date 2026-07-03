@@ -5,8 +5,4 @@ import java.util.List;
 import java.util.UUID;
 
 public record FraudDetectedEvent(
-        UUID transactionId,
-        Integer riskScore,
-        List<String> triggeredRules,
-        Instant occurredAt
-    ) { }
+    UUID transactionId, Integer riskScore, List<String> triggeredRules, Instant occurredAt) {}
