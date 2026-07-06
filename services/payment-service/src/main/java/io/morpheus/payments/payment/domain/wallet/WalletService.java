@@ -1,9 +1,12 @@
 package io.morpheus.payments.payment.domain.wallet;
 
 import io.morpheus.payments.common.exception.ResourceNotFoundException;
+import io.morpheus.payments.payment.mapper.WalletMapper;
 import io.morpheus.payments.payment.persistence.entity.WalletEntity;
 import io.morpheus.payments.payment.persistence.repository.WalletRepository;
 import java.util.UUID;
+
+import io.morpheus.payments.payment.model.response.WalletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

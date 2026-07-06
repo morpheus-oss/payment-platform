@@ -1,10 +1,9 @@
 package io.morpheus.payments.payment.application.transfer;
 
-import io.morpheus.payments.payment.domain.transfer.TransferRequest;
-import io.morpheus.payments.payment.domain.transfer.TransferResponse;
+import io.morpheus.payments.payment.model.request.TransferRequest;
+import io.morpheus.payments.payment.model.response.TransferResponse;
 
-public interface TransferUseCase
-{
+public interface TransferUseCase {
 
-	TransferResponse execute(TransferRequest request);
+    TransferResponse execute(TransferRequest request);
 }

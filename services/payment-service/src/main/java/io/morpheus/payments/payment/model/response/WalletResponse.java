@@ -1,4 +1,4 @@
-package io.morpheus.payments.payment.domain.wallet;
+package io.morpheus.payments.payment.model.response;
 
 import java.math.BigDecimal;
 import java.util.UUID;

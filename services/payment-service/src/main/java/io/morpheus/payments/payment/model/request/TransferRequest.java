@@ -1,4 +1,4 @@
-package io.morpheus.payments.payment.domain.transfer;
+package io.morpheus.payments.payment.model.request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
