@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 @Transactional
+@Deprecated(forRemoval = true)
 public class WalletService
 {
 

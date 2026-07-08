@@ -37,6 +37,13 @@
     <java.version>21</java.version>
     <spring.boot.version>3.5.14</spring.boot.version>
 
+    <lombok.version>1.18.46</lombok.version>
+
+    <!--  Testing     -->
+    <junit-jupiter.version>5.13.4</junit-jupiter.version>
+    <mockito.version>5.18.0</mockito.version>
+    <assertj.version>3.27.7</assertj.version>
+
     <!--  ArchUnit Plugin   -->
     <archunit.version>1.4.1</archunit.version>
 
@@ -63,6 +70,14 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${spring.boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junit-jupiter.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
