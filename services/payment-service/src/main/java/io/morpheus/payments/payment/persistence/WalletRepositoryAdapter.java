@@ -2,30 +2,40 @@ package io.morpheus.payments.payment.persistence;
 
 import io.morpheus.payments.payment.application.port.out.WalletRepositoryPort;
 import io.morpheus.payments.payment.domain.wallet.Wallet;
+import io.morpheus.payments.payment.mapper.WalletMapper;
+import io.morpheus.payments.payment.persistence.entity.WalletEntity;
 import io.morpheus.payments.payment.persistence.repository.WalletRepository;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
+import java.util.UUID;
 
+@RequiredArgsConstructor
 public class WalletRepositoryAdapter implements WalletRepositoryPort {
 
-    private final WalletRepository repository;
+    private final WalletRepository walletRepository;
 
-    public WalletRepositoryAdapter(WalletRepository repository) {
-        this.repository = repository;
-    }
+    private final WalletMapper walletMapper;
 
     @Override
     public Wallet save(Wallet wallet) {
-        return repository.save(wallet);
+
+        WalletEntity entity = walletMapper.toEntity(wallet);
+        WalletEntity persisted = walletRepository.save(entity);
+
+        return walletMapper.toDomain(persisted);
     }
 
     @Override
-    public Optional<Wallet> findById(String walletId) {
-        return repository.findById(walletId);
+    public Optional<Wallet> findById(UUID walletId) {
+
+        return walletRepository.findById(walletId)
+                               .map(walletMapper::toDomain);
     }
 
     @Override
-    public boolean existsById(String walletId) {
-        return repository.existsById(walletId);
+    public boolean existsById(UUID walletId) {
+
+        return walletRepository.existsById(walletId);
     }
 }

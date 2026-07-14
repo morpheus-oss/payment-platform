@@ -1,32 +1,42 @@
 package io.morpheus.payments.payment.persistence;
 
 import io.morpheus.payments.payment.application.port.WalletPersistencePort;
-import io.morpheus.payments.payment.domain.wallet.WalletRepository;
+import io.morpheus.payments.payment.domain.wallet.Wallet;
+import io.morpheus.payments.payment.domain.wallet.WalletId;
+import io.morpheus.payments.payment.mapper.WalletMapper;
 import io.morpheus.payments.payment.persistence.entity.WalletEntity;
+import io.morpheus.payments.payment.persistence.repository.WalletRepository;
+
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.stereotype.Component;
 
-@Component
-public class WalletPersistenceAdapter implements WalletPersistencePort
-{
+public class WalletPersistenceAdapter implements WalletPersistencePort  {
 
-	private final WalletRepository walletRepository;
+    private final WalletRepository walletRepository;
 
-	public WalletPersistenceAdapter(final WalletRepository walletRepository)
-	{
-		this.walletRepository = walletRepository;
-	}
+    private final WalletMapper walletMapper;
 
-	@Override
-	public Optional<WalletEntity> findById(final UUID walletId)
-	{
-		return walletRepository.findById(walletId);
-	}
+    public WalletPersistenceAdapter(WalletRepository walletRepository,
+                                    WalletMapper walletMapper) {
 
-	@Override
-	public WalletEntity save(final WalletEntity wallet)
-	{
-		return walletRepository.save(wallet);
-	}
+        this.walletRepository = walletRepository;
+        this.walletMapper = walletMapper;
+    }
+
+
+    @Override
+    public Optional<Wallet> findById(UUID walletId) {
+        return walletRepository.findById(walletId).map(walletMapper::toDomain);
+    }
+
+    @Override
+    public Wallet save(Wallet wallet) {
+        WalletEntity entity = walletMapper.toEntity(wallet);
+
+        WalletEntity persisted = walletRepository.save(entity);
+
+        return walletMapper.toDomain(persisted);
+
+    }
+
 }

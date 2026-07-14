@@ -14,38 +14,39 @@ import java.util.Objects;
 public final class Wallet
 {
 
-	private final WalletId id;
+	private final WalletId walletId;
+
+    private final String ownerId;
 
 	private Money balance;
 
-	private Wallet(final WalletId id, final Money openingBalance)
-	{
-		this.id = Objects.requireNonNull(id, "id must not be null");
-		this.balance = Objects.requireNonNull(openingBalance, "openingBalance must not be null");
+	private Wallet(final WalletId walletId, String ownerId, final Money openingBalance)     {
+		this.walletId = Objects.requireNonNull(walletId, "id must not be null");
+        this.ownerId = ownerId;
+        this.balance = Objects.requireNonNull(openingBalance, "openingBalance must not be null");
 	}
 
-	public static Wallet from(final WalletId id, final Money openingBalance)
-	{
-		return new Wallet(id, openingBalance);
+	public static Wallet from(final WalletId id, final String ownerId, final Money openingBalance)    {
+		return new Wallet(id, ownerId, openingBalance);
 	}
 
-	public WalletId id()
-	{
-		return id;
+	public WalletId id()    {
+		return walletId;
 	}
 
-	public Money balance()
-	{
+    public String ownerId()    {
+        return ownerId;
+    }
+
+	public Money balance()  {
 		return balance;
 	}
 
-	public void deposit(final @Positive Money amount)
-	{
+	public void deposit(final @Positive Money amount)   {
 		balance = balance.add(amount);
 	}
 
-	public void withdraw(final @Positive BigDecimal amount)
-	{
+	public void withdraw(final @Positive BigDecimal amount) {
 
 		if (balance.compareTo(amount) < 0)
 		{ throw new InsufficientFundsException(); }
