@@ -1,7 +1,7 @@
 package io.morpheus.payments.payment.application.usecase;
 
 import io.morpheus.payments.payment.application.command.CreateWalletCommand;
-import io.morpheus.payments.payment.application.port.out.WalletRepositoryPort;
+import io.morpheus.payments.payment.application.port.WalletPersistencePort;
 import io.morpheus.payments.payment.application.result.CreateWalletResult;
 import io.morpheus.payments.payment.domain.shared.Money;
 import io.morpheus.payments.payment.domain.wallet.Wallet;
@@ -12,11 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Currency;
-import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,34 +24,29 @@ import static org.mockito.Mockito.when;
 class CreateWalletUseCaseTest {
 
     @Mock
-    private WalletRepositoryPort walletRepositoryPort;
+    private WalletPersistencePort walletPersistencePort;
 
     @InjectMocks
     private DefaultCreateWalletUseCase useCase;
 
     @Test
-    void shouldThrowUntilImplementationIsMigrated() {
-
-        CreateWalletUseCase walletUseCase = new DefaultCreateWalletUseCase(walletRepositoryPort);
-
-        assertThrows(UnsupportedOperationException.class,
-                    () -> walletUseCase.execute(
-                        new CreateWalletCommand(
-                            "customer",
-                            "INR")));
-    }
-
-    @Test
     void shouldPersistWallet() {
-        Wallet wallet = Wallet.from(WalletId.generate(), Money.zero(Currency.getInstance(Locale.getDefault())));
+        String ownerId = "abcdefg@xyz.com";
 
-        when(walletRepositoryPort.save(any())).thenReturn(wallet);
+        Wallet wallet = Wallet.from(WalletId.generate(), ownerId, Money.zero(Currency.getInstance("INR")));
 
-        CreateWalletCommand command = new CreateWalletCommand("customer", "INR");
+        when(walletPersistencePort.save(any())).thenReturn(wallet);
+
+        CreateWalletCommand command = new CreateWalletCommand(
+                                                ownerId,
+                                                wallet.balance().currency(),
+                                                BigDecimal.ZERO);
         CreateWalletResult result = useCase.execute(command);
 
-        verify(walletRepositoryPort).save(any());
+        verify(walletPersistencePort).save(any());
 
-        assertThat(result).isNotNull();
+        assertThat(result.walletId()).isEqualTo(wallet.id().value());
+        assertThat(result.ownerId()).isEqualTo(wallet.ownerId());
+        assertThat(result.balance()).isEqualByComparingTo(wallet.balance().amount().doubleValue());
     }
 }
