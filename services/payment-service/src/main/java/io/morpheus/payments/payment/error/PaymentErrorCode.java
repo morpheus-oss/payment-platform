@@ -10,10 +10,9 @@ import io.morpheus.payments.common.error.ErrorCode;
  */
 public enum PaymentErrorCode implements ErrorCode {
     INSUFFICIENT_FUNDS("PAYMENT-001", "Insufficient funds.", ErrorCategory.DOMAIN),
-
-    WALLET_NOT_FOUND("PAYMENT-002", "Wallet not found.", ErrorCategory.DOMAIN),
-
-    DUPLICATE_TRANSFER("PAYMENT-003", "Transfer has already been processed.", ErrorCategory.DOMAIN);
+    SRC_WALLET_NOT_FOUND("PAYMENT-002", "Source Wallet not found.", ErrorCategory.DOMAIN),
+    DEST_WALLET_NOT_FOUND("PAYMENT-003", "Destination Wallet not found.", ErrorCategory.DOMAIN),
+    DUPLICATE_TRANSFER("PAYMENT-004", "Transfer has already been processed.", ErrorCategory.DOMAIN);
 
     private final String code;
     private final String message;

@@ -1,5 +1,7 @@
 package io.morpheus.payments.payment.application.usecase;
 
+import io.morpheus.payments.payment.exception.ResourceNotFoundException;
+
 /**
  * Generic contract for all application use cases.
  *
@@ -9,5 +11,5 @@ package io.morpheus.payments.payment.application.usecase;
 @FunctionalInterface
 public interface UseCase<C, R> {
 
-    R execute(C command);
+    R execute(C command) throws ResourceNotFoundException;
 }

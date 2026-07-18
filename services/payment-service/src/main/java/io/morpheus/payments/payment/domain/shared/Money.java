@@ -17,8 +17,7 @@ public record Money(BigDecimal amount, Currency currency) implements Comparable<
 		Objects.requireNonNull(amount, "amount must not be null");
 		Objects.requireNonNull(currency, "currency must not be null");
 
-		if (amount.scale() > currency.getDefaultFractionDigits())
-		{
+		if (amount.scale() > currency.getDefaultFractionDigits()) {
 			throw new IllegalArgumentException(
 					"Amount exceeds supported fraction digits for currency " + currency.getCurrencyCode());
 		}
@@ -26,59 +25,70 @@ public record Money(BigDecimal amount, Currency currency) implements Comparable<
 		amount = amount.setScale(currency.getDefaultFractionDigits(), RoundingMode.UNNECESSARY);
 	}
 
-	public static Money zero(final Currency currency)
-	{
+	public static Money zero(final Currency currency)   {
 		return new Money(BigDecimal.ZERO, currency);
 	}
 
-	public Money add(final Money other)
-	{
+    /**
+     * Creates <code>Money</code> instance with currency defaults to "INR".
+     *
+     * @param amount
+     * @return
+     */
+    public static Money of(final BigDecimal amount) {
+        return new Money(amount, Currency.getInstance("INR"));
+    }
+
+    /**
+     * Creates <code>Money</code> instance.
+     *
+     * @param amount
+     * @return
+     */
+    public static Money of(BigDecimal amount, Currency currency) {
+        return new Money(amount, currency);
+    }
+
+	public Money add(final Money other)     {
 		requireSameCurrency(other);
 		return new Money(amount.add(other.amount), currency);
 	}
 
-	public Money subtract(final Money other)
-	{
+	public Money subtract(final Money other)    {
 		requireSameCurrency(other);
 		return new Money(amount.subtract(other.amount), currency);
 	}
 
-	public boolean isNegative()
-	{
+	public boolean isNegative()     {
 		return amount.signum() < 0;
 	}
 
-	public boolean isZero()
-	{
+	public boolean isZero()     {
 		return amount.signum() == 0;
 	}
 
-	public boolean isPositive()
-	{
+	public boolean isPositive()     {
 		return amount.signum() > 0;
 	}
 
 	@Override
-	public int compareTo(final Money other)
-	{
+	public int compareTo(final Money other)     {
 		requireSameCurrency(other);
 		return amount.compareTo(other.amount);
 	}
 
-	private void requireSameCurrency(final Money other)
-	{
+	private void requireSameCurrency(final Money other)     {
 		Objects.requireNonNull(other, "other must not be null");
 
-		if (!currency.equals(other.currency))
-		{
+		if (!currency.equals(other.currency))   {
 			throw new IllegalArgumentException(
 					"Currency mismatch: " + currency.getCurrencyCode() + " vs " + other.currency.getCurrencyCode());
 		}
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString()    {
 		return currency.getCurrencyCode() + " " + amount;
 	}
+
 }

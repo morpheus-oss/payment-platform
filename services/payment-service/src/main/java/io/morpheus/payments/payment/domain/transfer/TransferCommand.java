@@ -17,10 +17,12 @@ public record TransferCommand(WalletId sourceWalletId, WalletId destinationWalle
 		Objects.requireNonNull(destinationWalletId, "destinationWalletId must not be null");
 		Objects.requireNonNull(amount, "amount must not be null");
 
-		if (sourceWalletId.equals(destinationWalletId))
-		{ throw new IllegalArgumentException("Source and destination wallets must be different."); }
+		if (sourceWalletId.equals(destinationWalletId))     {
+            throw new IllegalArgumentException("Source and destination wallets must be different.");
+        }
 
-		if (!amount.isPositive())
-		{ throw new IllegalArgumentException("Transfer amount must be greater than zero."); }
+		if (!amount.isPositive())   {
+            throw new IllegalArgumentException("Transfer amount must be greater than zero.");
+        }
 	}
 }

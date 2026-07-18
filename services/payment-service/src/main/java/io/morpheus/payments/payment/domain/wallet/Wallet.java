@@ -46,11 +46,16 @@ public final class Wallet
 		balance = balance.add(amount);
 	}
 
-	public void withdraw(final @Positive BigDecimal amount) {
+	public void withdraw(final @Positive Money amount) {
 
-		if (balance.compareTo(amount) < 0)
-		{ throw new InsufficientFundsException(); }
+		if (balance.compareTo(amount) < 0) {
+            throw new InsufficientFundsException();
+        }
 
 		balance = balance.subtract(amount);
 	}
+
+    public boolean hasSufficientFunds(@Positive BigDecimal amount) {
+        return balance().amount().doubleValue() >= amount.doubleValue();
+    }
 }

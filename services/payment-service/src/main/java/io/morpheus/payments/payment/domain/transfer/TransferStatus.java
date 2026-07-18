@@ -1,6 +1,5 @@
 package io.morpheus.payments.payment.domain.transfer;
 
-public enum TransferStatus
-{
+public enum TransferStatus {
 	COMPLETED, FAILED
 }

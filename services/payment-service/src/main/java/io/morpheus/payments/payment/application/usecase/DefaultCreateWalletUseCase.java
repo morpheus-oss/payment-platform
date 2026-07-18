@@ -16,10 +16,9 @@ public class DefaultCreateWalletUseCase implements CreateWalletUseCase {
     @Override
     public CreateWalletResult execute(CreateWalletCommand command) {
 
-        Wallet wallet = Wallet.from(
-                                WalletId.generate(),
-                                command.ownerId(),
-                                Money.of(command.initialBalance(), command.currency()));
+        Wallet wallet = Wallet.from(WalletId.generate(),
+                                    command.ownerId(),
+                                    Money.of(command.initialBalance(), command.currency()));
 
         Wallet persistedWallet = walletPersistencePort.save(wallet);
 
@@ -29,4 +28,5 @@ public class DefaultCreateWalletUseCase implements CreateWalletUseCase {
                             persistedWallet.balance().currency().getCurrencyCode(),
                             persistedWallet.balance().amount().doubleValue());
     }
+
 }

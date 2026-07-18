@@ -24,6 +24,8 @@ public class TransferEntity
 
 	private UUID destinationWalletId;
 
+    private String currency;
+
 	private BigDecimal amount;
 
 	@Enumerated(EnumType.STRING)
