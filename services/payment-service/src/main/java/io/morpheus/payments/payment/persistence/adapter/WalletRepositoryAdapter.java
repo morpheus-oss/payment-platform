@@ -1,4 +1,4 @@
-package io.morpheus.payments.payment.persistence;
+package io.morpheus.payments.payment.persistence.adapter;
 
 import io.morpheus.payments.payment.application.port.out.WalletRepositoryPort;
 import io.morpheus.payments.payment.domain.wallet.Wallet;

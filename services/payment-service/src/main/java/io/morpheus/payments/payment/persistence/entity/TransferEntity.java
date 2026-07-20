@@ -24,7 +24,7 @@ public class TransferEntity
 
 	private UUID destinationWalletId;
 
-    private String currency;
+    private String currencyCode;
 
 	private BigDecimal amount;
 

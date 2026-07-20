@@ -1,8 +1,7 @@
-package io.morpheus.payments.payment.persistence;
+package io.morpheus.payments.payment.persistence.adapter;
 
-import io.morpheus.payments.payment.application.port.WalletPersistencePort;
+import io.morpheus.payments.payment.application.port.out.WalletPersistencePort;
 import io.morpheus.payments.payment.domain.wallet.Wallet;
-import io.morpheus.payments.payment.domain.wallet.WalletId;
 import io.morpheus.payments.payment.mapper.WalletMapper;
 import io.morpheus.payments.payment.persistence.entity.WalletEntity;
 import io.morpheus.payments.payment.persistence.repository.WalletRepository;

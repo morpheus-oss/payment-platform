@@ -1,7 +1,7 @@
 package io.morpheus.payments.payment.application.usecase;
 
 import io.morpheus.payments.payment.application.command.CreateWalletCommand;
-import io.morpheus.payments.payment.application.port.WalletPersistencePort;
+import io.morpheus.payments.payment.application.port.out.WalletPersistencePort;
 import io.morpheus.payments.payment.application.result.CreateWalletResult;
 import io.morpheus.payments.payment.domain.shared.Money;
 import io.morpheus.payments.payment.domain.wallet.Wallet;

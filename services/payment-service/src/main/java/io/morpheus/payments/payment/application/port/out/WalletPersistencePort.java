@@ -1,4 +1,4 @@
-package io.morpheus.payments.payment.application.port;
+package io.morpheus.payments.payment.application.port.out;
 
 import io.morpheus.payments.payment.domain.wallet.Wallet;
 
