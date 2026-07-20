@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.morpheus.payments.events.envelope.EventTypes;
 import io.morpheus.payments.events.types.MoneyTransferredEvent;
+import io.morpheus.payments.payment.application.port.out.TransferPersistencePort;
 import io.morpheus.payments.payment.application.port.out.WalletPersistencePort;
 import io.morpheus.payments.payment.application.result.TransferResult;
 import io.morpheus.payments.payment.domain.outbox.OutboxStatus;
@@ -32,16 +33,16 @@ public class TransferService
 
     private final WalletPersistencePort walletPersistencePort;
 
-    private final TransferRepository transferRepository;
+    private final TransferPersistencePort transferPersistencePort;
+
     private final OutboxEventRepository outboxRepository;
 
     private final ObjectMapper objectMapper;
 
     @Transactional
-    public TransferResult transfer(
-        final Wallet source,
-        final Wallet destination,
-        final TransferCommand domainCommand) {
+    public TransferResult transfer(final Wallet source,
+                                   final Wallet destination,
+                                   final TransferCommand domainCommand) {
 
         if (!source.hasSufficientFunds(domainCommand.amount().amount())) {
             throw new InsufficientFundsException();
@@ -55,48 +56,32 @@ public class TransferService
         walletPersistencePort.save(source);
         walletPersistencePort.save(destination);
 
-        TransferEntity transfer = createTransfer(domainCommand);
-
-        transferRepository.save(transfer);
+        TransferResult result = new TransferResult(transferPersistencePort.save(domainCommand));
 
         try {
-            createOutboxEvent(transfer);
+            createOutboxEvent(result.transactionId(), domainCommand);
         }
         catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
 
-        return new TransferResult(transfer.getId());
+        return result;
     }
 
-    private TransferEntity createTransfer(final TransferCommand command) {
+    private void createOutboxEvent(final UUID txId, final TransferCommand command) throws JsonProcessingException {
 
-        TransferEntity transfer = new TransferEntity();
-        transfer.setId(UUID.randomUUID());
-        transfer.setSourceWalletId(command.sourceWalletId().value());
-        transfer.setDestinationWalletId(command.destinationWalletId().value());
-        transfer.setCurrencyCode(command.amount().currency().getCurrencyCode());
-        transfer.setAmount(command.amount().amount());
-        transfer.setStatus(TransferStatus.COMPLETED);
-        transfer.setCreatedAt(Instant.now());
-
-        return transfer;
-    }
-
-    private void createOutboxEvent(final TransferEntity transfer) throws JsonProcessingException {
-
-        MoneyTransferredEvent event = new MoneyTransferredEvent(transfer.getId(),
-                                                                transfer.getSourceWalletId(),
-                                                                transfer.getDestinationWalletId(),
-                                                                transfer.getCurrencyCode(),
-                                                                transfer.getAmount(),
+        MoneyTransferredEvent event = new MoneyTransferredEvent(txId,
+                                                                command.sourceWalletId().value(),
+                                                                command.destinationWalletId().value(),
+                                                                command.amount().currency().getCurrencyCode(),
+                                                                command.amount().amount(),
                                                                 Instant.now());
 
         String payload = objectMapper.writeValueAsString(event);
 
         OutboxEventEntity outbox = new OutboxEventEntity();
         outbox.setId(UUID.randomUUID());
-        outbox.setAggregateId(transfer.getId());
+        outbox.setAggregateId(txId);
         outbox.setEventType(EventTypes.MONEY_TRANSFERRED);
         outbox.setPayload(payload);
         outbox.setStatus(OutboxStatus.PENDING);
