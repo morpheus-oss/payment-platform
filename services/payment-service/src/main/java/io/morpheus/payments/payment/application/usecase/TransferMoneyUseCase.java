@@ -10,11 +10,13 @@ import io.morpheus.payments.payment.domain.transfer.TransferService;
 import io.morpheus.payments.payment.domain.wallet.Wallet;
 import io.morpheus.payments.payment.exception.ResourceNotFoundException;
 import io.morpheus.payments.payment.model.response.TransferResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class TransferMoneyUseCase implements TransferUseCase {
 
     private final TransferService transferService;

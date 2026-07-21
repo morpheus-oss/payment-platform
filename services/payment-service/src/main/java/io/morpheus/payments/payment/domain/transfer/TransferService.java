@@ -15,19 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 
-@Service
 @RequiredArgsConstructor
 public class TransferService    {
 
     private static final Logger logger = LoggerFactory.getLogger(TransferService.class);
 
     private final WalletPersistencePort walletPersistencePort;
-
     private final TransferPersistencePort transferPersistencePort;
-
     private final OutboxPublisherPort outboxPublisherPort;
 
-    @Transactional
     public TransferResult transfer(final Wallet source,
                                    final Wallet destination,
                                    final TransferCommand domainCommand) {
@@ -53,7 +49,7 @@ public class TransferService    {
                                 domainCommand.destinationWalletId().value(),
                                 domainCommand.amount().currency().getCurrencyCode(),
                                 domainCommand.amount().amount(),
-                            Instant.now()));
+                                Instant.now()));
 
         return result;
     }
