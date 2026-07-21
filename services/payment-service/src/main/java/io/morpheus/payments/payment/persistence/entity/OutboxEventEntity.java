@@ -1,45 +1,43 @@
 package io.morpheus.payments.payment.persistence.entity;
 
-import io.morpheus.payments.payment.outbox.OutboxStatus;
+import io.morpheus.payments.payment.domain.outbox.OutboxStatus;
 import io.morpheus.payments.payment.persistence.audit.AuditableEntity;
 import jakarta.persistence.*;
+import java.time.Instant;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.Instant;
-import java.util.UUID;
 
 @Entity
 @Table(name = "outbox_events")
 @Getter
 @Setter
 @NoArgsConstructor
-public class OutboxEventEntity extends AuditableEntity {
+public class OutboxEventEntity extends AuditableEntity  {
 
-    @Id
-    private UUID id;
+	@Id
+	private UUID id;
 
-    private UUID aggregateId;
+	private UUID aggregateId;
 
-    private String eventType;
+	private String eventType;
 
-    @Lob
-    private String payload;
+	@Lob
+	private String payload;
 
-    @Enumerated(EnumType.STRING)
-    private OutboxStatus status;
+	@Enumerated(EnumType.STRING)
+	private OutboxStatus status;
 
-    private Integer retryCount;
+	private Integer retryCount;
 
-    private Instant nextRetryAt;
+	private Instant nextRetryAt;
 
-    public void incrementRetryCount() {
-        retryCount++;
-    }
+	public void incrementRetryCount()   {
+		retryCount++;
+	}
 
-    public void markFailed() {
-        status = OutboxStatus.FAILED;
-    }
-
+	public void markFailed()    {
+		status = OutboxStatus.FAILED;
+	}
 }
