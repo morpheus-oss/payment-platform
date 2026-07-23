@@ -1,5 +1,6 @@
 package io.morpheus.payments.payment.persistence.entity;
 
+import io.morpheus.payments.events.envelope.EventType;
 import io.morpheus.payments.payment.domain.outbox.OutboxStatus;
 import io.morpheus.payments.payment.persistence.audit.AuditableEntity;
 import jakarta.persistence.*;
@@ -21,7 +22,8 @@ public class OutboxEventEntity extends AuditableEntity  {
 
 	private UUID aggregateId;
 
-	private String eventType;
+    @Enumerated(EnumType.STRING)
+	private EventType eventType;
 
 	@Lob
 	private String payload;

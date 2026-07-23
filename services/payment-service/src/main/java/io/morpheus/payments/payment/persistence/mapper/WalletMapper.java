@@ -1,4 +1,4 @@
-package io.morpheus.payments.payment.mapper;
+package io.morpheus.payments.payment.persistence.mapper;
 
 import io.morpheus.payments.payment.domain.shared.Money;
 import io.morpheus.payments.payment.domain.wallet.Wallet;

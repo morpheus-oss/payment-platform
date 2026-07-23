@@ -5,7 +5,7 @@ import io.morpheus.payments.payment.application.port.out.WalletPersistencePort;
 import io.morpheus.payments.payment.application.port.in.CreateWalletPort;
 import io.morpheus.payments.payment.application.port.out.WalletRepositoryPort;
 import io.morpheus.payments.payment.application.usecase.DefaultCreateWalletUseCase;
-import io.morpheus.payments.payment.mapper.WalletMapper;
+import io.morpheus.payments.payment.persistence.mapper.WalletMapper;
 import io.morpheus.payments.payment.persistence.adapter.WalletPersistenceAdapter;
 import io.morpheus.payments.payment.persistence.adapter.WalletRepositoryAdapter;
 import io.morpheus.payments.payment.persistence.repository.WalletRepository;

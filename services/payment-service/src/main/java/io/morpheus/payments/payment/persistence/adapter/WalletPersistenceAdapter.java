@@ -2,26 +2,20 @@ package io.morpheus.payments.payment.persistence.adapter;
 
 import io.morpheus.payments.payment.application.port.out.WalletPersistencePort;
 import io.morpheus.payments.payment.domain.wallet.Wallet;
-import io.morpheus.payments.payment.mapper.WalletMapper;
+import io.morpheus.payments.payment.persistence.mapper.WalletMapper;
 import io.morpheus.payments.payment.persistence.entity.WalletEntity;
 import io.morpheus.payments.payment.persistence.repository.WalletRepository;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 public class WalletPersistenceAdapter implements WalletPersistencePort  {
 
     private final WalletRepository walletRepository;
 
     private final WalletMapper walletMapper;
-
-    public WalletPersistenceAdapter(WalletRepository walletRepository,
-                                    WalletMapper walletMapper) {
-
-        this.walletRepository = walletRepository;
-        this.walletMapper = walletMapper;
-    }
-
 
     @Override
     public Optional<Wallet> findById(UUID walletId) {
@@ -35,7 +29,6 @@ public class WalletPersistenceAdapter implements WalletPersistencePort  {
         WalletEntity persisted = walletRepository.save(entity);
 
         return walletMapper.toDomain(persisted);
-
     }
 
 }
