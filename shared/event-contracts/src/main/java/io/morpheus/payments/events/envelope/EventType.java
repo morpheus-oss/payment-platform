@@ -6,7 +6,7 @@ public enum EventType {
 	FRAUD_DETECTED("FraudDetected"),
 	FRAUD_CLEARED("FraudCleared");
 
-    private String eventType;
+    private final String eventType;
 
     EventType(String eventType) {
         this.eventType = eventType;
