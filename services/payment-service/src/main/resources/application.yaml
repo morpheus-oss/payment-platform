@@ -15,6 +15,15 @@ spring:
   rabbitmq:
     host: localhost
     port: 5672
+    username: guest
+    password: guest
+
+payment:
+  messaging:
+    exchange: payment.exchange
+    fraud.queue: payment.fraud.queue
+    notification.queue: payment.notification.queue
+    routing-key: MoneyTransferred
 
 server:
   port: 7070
