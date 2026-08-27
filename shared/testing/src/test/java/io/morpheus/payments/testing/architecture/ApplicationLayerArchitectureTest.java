@@ -50,6 +50,17 @@ class ApplicationLayerArchitectureTest {
             .should()
             .dependOnClassesThat()
             .resideInAnyPackage(CONFIG_PACKAGE);
+
+    @ArchTest
+    static final ArchRule events_should_not_depend_on_amqp =
+        noClasses()
+            .that()
+            .resideInAPackage(EVENTS_PACKAGE)
+            .should()
+            .dependOnClassesThat()
+            .resideInAnyPackage(
+                "org.springframework.amqp..",
+                "org.springframework.rabbit..");
 /*
     @ArchTest
     static final ArchRule use_cases_should_implement_usecase_interface =
