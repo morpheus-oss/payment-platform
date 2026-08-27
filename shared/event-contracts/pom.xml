@@ -34,8 +34,9 @@
     </dependency>
 
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-amqp</artifactId>
+      <groupId>io.cloudevents</groupId>
+      <artifactId>cloudevents-json-jackson</artifactId>
+      <version>4.0.2</version>
     </dependency>
 
     <!--  JSON  -->

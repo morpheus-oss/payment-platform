@@ -8,6 +8,7 @@ public final class ArchitecturePackages {
 	static final String APPLICATION_PACKAGE     = "..application..";
     static final String APPLICATION_USE_CASE    = "..application.usecase..";;
     static final String APPLICATION_PORT        = "..application.port..";
+    static final String EVENTS_PACKAGE          = "..events..";
 
     static final String CONTROLLER_PACKAGE      = "..controller..";
 	static final String PERSISTENCE_PACKAGE     = "..persistence..";

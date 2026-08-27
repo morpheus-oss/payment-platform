@@ -1,7 +1,7 @@
 package io.morpheus.payments.payment.domain.outbox;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.morpheus.payments.events.messaging.publisher.CloudEventPublisher;
+import io.morpheus.payments.events.cloudevents.CloudEventPublisher;
 import io.morpheus.payments.payment.persistence.entity.OutboxEventEntity;
 import io.morpheus.payments.payment.persistence.repository.OutboxEventRepository;
 import java.util.List;

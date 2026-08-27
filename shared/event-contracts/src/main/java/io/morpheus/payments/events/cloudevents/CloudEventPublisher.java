@@ -1,4 +1,4 @@
-package io.morpheus.payments.events.messaging.publisher;
+package io.morpheus.payments.events.cloudevents;
 
 import io.cloudevents.CloudEvent;
 
