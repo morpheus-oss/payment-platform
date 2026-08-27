@@ -1,8 +1,8 @@
 package io.morpheus.payments.events.cloudevents;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.provider.EventFormatProvider;
+import io.cloudevents.jackson.JsonFormat;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,4 +1,4 @@
-package io.morpheus.payments.events.messaging.config;
+package io.morpheus.payments.payment.messaging.config;
 
 import org.springframework.amqp.core.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
