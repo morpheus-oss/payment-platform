@@ -1,16 +1,17 @@
-package io.morpheus.payments.payment.messaging;
+package io.morpheus.payments.payment.messaging.publisher;
 
 import io.cloudevents.CloudEvent;
 import io.morpheus.payments.events.cloudevents.CloudEventSerializer;
 import io.morpheus.payments.payment.messaging.config.MessagingProperties;
-import io.morpheus.payments.payment.messaging.publisher.RabbitCloudEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -19,9 +20,9 @@ class RabbitCloudEventPublisherTest {
 
     private static final String EXCHANGE = "payment.exchange";
 
-    private static final String ROUTING_KEY = "payment.transfer.completed";
+    private static final String ROUTING_KEY = "MoneyTransferred";
 
-    private static final byte[] SERIALIZED_PAYLOAD = "{\"specversion\":\"1.0\"}".getBytes();
+    private static final byte[] SERIALIZED_PAYLOAD = "serialized-cloud-event".getBytes();
 
     @Mock
     private RabbitTemplate rabbitTemplate;
@@ -39,6 +40,10 @@ class RabbitCloudEventPublisherTest {
 
     @BeforeEach
     void setUp() {
+        publisher = new RabbitCloudEventPublisher(rabbitTemplate,
+                                                cloudEventSerializer,
+                                                messagingProperties);
+
         when(messagingProperties.getExchange())
             .thenReturn(EXCHANGE);
 
@@ -47,43 +52,41 @@ class RabbitCloudEventPublisherTest {
 
         when(cloudEventSerializer.serialize(cloudEvent))
             .thenReturn(SERIALIZED_PAYLOAD);
-
-        publisher = new RabbitCloudEventPublisher(rabbitTemplate,
-                                                  cloudEventSerializer,
-                                                  messagingProperties);
     }
 
     @Test
-    void shouldSerializeCloudEventAndPublishSerializedPayload() {
+    void shouldSerializeCloudEventBeforePublishing() {
         publisher.publish(cloudEvent);
 
-        verify(cloudEventSerializer).serialize(cloudEvent);
+        final InOrder inOrder = org.mockito.Mockito.inOrder(cloudEventSerializer, rabbitTemplate);
 
-        verify(rabbitTemplate).convertAndSend(EXCHANGE,
-                                            ROUTING_KEY,
-                                            SERIALIZED_PAYLOAD);
+        inOrder.verify(cloudEventSerializer)
+            .serialize(cloudEvent);
+
+        inOrder.verify(rabbitTemplate)
+            .convertAndSend(EXCHANGE,
+                            ROUTING_KEY,
+                            SERIALIZED_PAYLOAD);
     }
 
     @Test
-    void shouldPublishUsingConfiguredExchangeAndRoutingKey()
-    {
+    void shouldPublishUsingConfiguredExchangeAndRoutingKey() {
         publisher.publish(cloudEvent);
 
-        verify(rabbitTemplate).convertAndSend(EXCHANGE,
-                                            ROUTING_KEY,
-                                            SERIALIZED_PAYLOAD);
+        verify(rabbitTemplate)
+            .convertAndSend(EXCHANGE,
+                            ROUTING_KEY,
+                            SERIALIZED_PAYLOAD);
     }
 
     @Test
-    void shouldSerializeCloudEventBeforePublishing()
-    {
+    void shouldPublishSerializedPayloadRatherThanCloudEvent() {
         publisher.publish(cloudEvent);
 
-        verify(cloudEventSerializer).serialize(cloudEvent);
-
-        verify(rabbitTemplate).convertAndSend(EXCHANGE,
-                                            ROUTING_KEY,
-                                            SERIALIZED_PAYLOAD);
+        verify(rabbitTemplate)
+            .convertAndSend(EXCHANGE,
+                            ROUTING_KEY,
+                            SERIALIZED_PAYLOAD);
     }
 
 }
