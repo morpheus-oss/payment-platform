@@ -10,25 +10,11 @@ public interface OutboxEventRepository extends JpaRepository<OutboxEventEntity, 
 {
 	@Query(value = """
 			    SELECT * FROM outbox_events
-			        WHERE published = 'PENDING'
+			        WHERE status = 'PENDING'
 			        ORDER BY created_at
 			        LIMIT :batchSize
 			        FOR UPDATE SKIP LOCKED
 			""", nativeQuery = true)
 	List<OutboxEventEntity> lockBatch(@Param("batchSize") int batchSize);
 
-	@Query(value = """
-			    SELECT * FROM outbox_events
-			        WHERE(
-			            status='PENDING'
-			            OR (
-			                status='FAILED'
-			                AND next_retry_at <= NOW()
-			            )
-			        )
-			        ORDER BY created_at
-			        LIMIT :batchSize
-			        FOR UPDATE SKIP LOCKED
-			""", nativeQuery = true)
-	List<OutboxEventEntity> lockPublishableBatch(@Param("batchSize") int batchSize);
 }
