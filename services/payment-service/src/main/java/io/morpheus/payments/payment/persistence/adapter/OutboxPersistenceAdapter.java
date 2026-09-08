@@ -4,10 +4,13 @@ import io.morpheus.payments.events.envelope.EventType;
 import io.morpheus.payments.payment.application.port.out.OutboxDispatchPort;
 import io.morpheus.payments.payment.application.result.OutboxEvent;
 import io.morpheus.payments.payment.persistence.entity.OutboxEventEntity;
+import io.morpheus.payments.payment.persistence.mapper.OutboxMapper;
 import io.morpheus.payments.payment.persistence.repository.OutboxEventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 @Component
@@ -15,19 +18,22 @@ import java.util.List;
 public class OutboxPersistenceAdapter implements OutboxDispatchPort {
 
     private final OutboxEventRepository outboxEventRepository;
+    private final OutboxMapper outboxMapper;
 
     @Override
+    @Transactional
     public List<OutboxEvent> claimPublishableBatch(final int batchSize) {
 
-        return outboxEventRepository.lockBatch(batchSize)
-                                    .stream()
-                                    .map(this::toApplicationEvent)
-                                    .toList();
-    }
+        final Instant now = Instant.now();
+        final List<OutboxEventEntity> entities = outboxEventRepository.lockPublishableBatch(batchSize, now);
 
-    private OutboxEvent toApplicationEvent(final OutboxEventEntity entity) {
+        entities.forEach(OutboxEventEntity::markProcessing);
 
-        return new OutboxEvent(entity.getId(), entity.getAggregateId(), entity.getEventType(), entity.getPayload());
+        outboxEventRepository.saveAll(entities);
+
+        return entities.stream()
+                    .map(outboxMapper::toApplicationEvent)
+                    .toList();
     }
 
 }

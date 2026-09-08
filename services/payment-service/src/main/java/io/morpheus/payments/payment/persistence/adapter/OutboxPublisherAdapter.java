@@ -8,6 +8,7 @@ import io.morpheus.payments.payment.application.port.out.OutboxPublisherPort;
 import io.morpheus.payments.payment.domain.outbox.OutboxStatus;
 import io.morpheus.payments.payment.domain.transfer.TransferCompleted;
 import io.morpheus.payments.payment.persistence.entity.OutboxEventEntity;
+import io.morpheus.payments.payment.persistence.mapper.OutboxMapper;
 import io.morpheus.payments.payment.persistence.repository.OutboxEventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,28 +20,16 @@ import java.util.UUID;
 public class OutboxPublisherAdapter implements OutboxPublisherPort  {
 
     private final OutboxEventRepository outboxEventRepository;
-
     private final ObjectMapper objectMapper;
+    private final OutboxMapper outboxMapper;
 
     @Override
     public void publish(final TransferCompleted event)  {
         try {
-            MoneyTransferredEvent moneyTransferredEvent = new MoneyTransferredEvent(event.transactionId(),
-                                                                                    event.sourceWalletId(),
-                                                                                    event.destinationWalletId(),
-                                                                                    event.currencyCode(),
-                                                                                    event.amount(),
-                                                                                    event.occurredAt());
-
+            MoneyTransferredEvent moneyTransferredEvent = outboxMapper.toIntegrationEvent(event);
             String payload = objectMapper.writeValueAsString(moneyTransferredEvent);
 
-            OutboxEventEntity outbox = new OutboxEventEntity();
-            outbox.setId(UUID.randomUUID());
-            outbox.setAggregateId(event.transactionId());
-            outbox.setEventType(EventType.MONEY_TRANSFERRED);
-            outbox.setPayload(payload);
-            outbox.setStatus(OutboxStatus.PENDING);
-            outbox.setRetryCount(0);
+            OutboxEventEntity outbox = outboxMapper.toEntity(UUID.randomUUID(), payload, event);
 
             outboxEventRepository.save(outbox);
         }

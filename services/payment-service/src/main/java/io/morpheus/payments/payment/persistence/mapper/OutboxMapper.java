@@ -2,6 +2,7 @@ package io.morpheus.payments.payment.persistence.mapper;
 
 import io.morpheus.payments.events.envelope.EventType;
 import io.morpheus.payments.events.types.MoneyTransferredEvent;
+import io.morpheus.payments.payment.application.result.OutboxEvent;
 import io.morpheus.payments.payment.domain.outbox.OutboxStatus;
 import io.morpheus.payments.payment.domain.transfer.TransferCompleted;
 import io.morpheus.payments.payment.persistence.entity.OutboxEventEntity;
@@ -22,17 +23,26 @@ public class OutboxMapper   {
                                         event.occurredAt());
     }
 
+    public OutboxEvent toApplicationEvent(final OutboxEventEntity entity) {
+
+        return new OutboxEvent(entity.getId(), entity.getAggregateId(), entity.getEventType(), entity.getPayload());
+    }
+
+
     public OutboxEventEntity toEntity(final UUID eventId,
                                       final String payload,
                                       final TransferCompleted event) {
 
-        OutboxEventEntity entity = new OutboxEventEntity();
+        final Instant now = Instant.now();
 
+        final OutboxEventEntity entity = new OutboxEventEntity();
         entity.setId(eventId);
         entity.setAggregateId(event.transactionId());
         entity.setEventType(EventType.MONEY_TRANSFERRED);
         entity.setPayload(payload);
         entity.setStatus(OutboxStatus.PENDING);
+        entity.setRetryCount(0);
+        entity.setNextRetryAt(now);
         entity.setCreatedAt(Instant.now());
 
         return entity;
