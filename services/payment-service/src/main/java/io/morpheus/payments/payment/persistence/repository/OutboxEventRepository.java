@@ -4,11 +4,13 @@ import io.morpheus.payments.payment.persistence.entity.OutboxEventEntity;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface OutboxEventRepository extends JpaRepository<OutboxEventEntity, String>
+public interface OutboxEventRepository extends JpaRepository<OutboxEventEntity, UUID>
 {
 	@Query(value = """
 			    SELECT * FROM outbox_events

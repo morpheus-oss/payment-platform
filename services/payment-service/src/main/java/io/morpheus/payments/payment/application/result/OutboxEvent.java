@@ -7,5 +7,6 @@ import java.util.UUID;
 public record OutboxEvent(UUID id,
                           UUID aggregateId,
                           EventType eventType,
-                          String payload) {
+                          String payload,
+                          int retryCount) {
 }

@@ -25,7 +25,11 @@ public class OutboxMapper   {
 
     public OutboxEvent toApplicationEvent(final OutboxEventEntity entity) {
 
-        return new OutboxEvent(entity.getId(), entity.getAggregateId(), entity.getEventType(), entity.getPayload());
+        return new OutboxEvent(entity.getId(),
+                            entity.getAggregateId(),
+                            entity.getEventType(),
+                            entity.getPayload(),
+                            entity.getRetryCount());
     }
 
 

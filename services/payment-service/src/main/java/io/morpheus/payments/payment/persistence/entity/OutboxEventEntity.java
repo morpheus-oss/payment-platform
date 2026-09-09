@@ -36,15 +36,22 @@ public class OutboxEventEntity extends AuditableEntity {
 
     private Instant nextRetryAt;
 
-    public void incrementRetryCount() {
-        retryCount++;
-    }
-
     public void markFailed() {
         status = OutboxStatus.FAILED;
     }
 
-    public void markProcessing()    {
+    public void markProcessing() {
         status = OutboxStatus.PROCESSING;
+    }
+
+    public void markPublished(final Instant publishedAt) {
+        status = OutboxStatus.PUBLISHED;
+        this.setUpdatedAt(publishedAt);
+    }
+
+    public void scheduleRetry(final Instant nextRetryAt) {
+        retryCount++;
+        this.nextRetryAt = nextRetryAt;
+        status = OutboxStatus.PENDING;
     }
 }
