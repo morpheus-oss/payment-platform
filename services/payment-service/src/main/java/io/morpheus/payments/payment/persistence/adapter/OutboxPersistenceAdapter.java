@@ -26,7 +26,7 @@ public class OutboxPersistenceAdapter implements OutboxDispatchPort {
         final Instant now = Instant.now();
 
         final List<OutboxEventEntity> entities = outboxEventRepository.lockPublishableBatch(batchSize, now);
-        entities.forEach(OutboxEventEntity::markProcessing);
+        entities.forEach(entity -> entity.markProcessing(now));
 
         outboxEventRepository.saveAll(entities);
 

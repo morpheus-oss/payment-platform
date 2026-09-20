@@ -46,6 +46,9 @@ class OutboxDispatcherTest {
     @Mock
     private CloudEvent cloudEvent;
 
+    @Mock
+    private RetryPolicy retryPolicy;
+
     @Test
     void shouldReconstructAndPublishOutboxEvent() {
 
@@ -59,7 +62,7 @@ class OutboxDispatcherTest {
             .thenReturn(cloudEvent);
 
         final OutboxDispatcher dispatcher = new OutboxDispatcher(outboxDispatchPort, outboxEventPayloadDeserializerPort,
-            cloudEventFactory, cloudEventPublisher);
+            cloudEventFactory, cloudEventPublisher, retryPolicy);
 
         dispatcher.dispatch(10);
 
@@ -87,7 +90,7 @@ class OutboxDispatcherTest {
             .thenReturn(List.of());
 
         final OutboxDispatcher dispatcher = new OutboxDispatcher(outboxDispatchPort, outboxEventPayloadDeserializerPort,
-            cloudEventFactory, cloudEventPublisher);
+            cloudEventFactory, cloudEventPublisher, retryPolicy);
 
         dispatcher.dispatch(10);
 
@@ -113,7 +116,7 @@ class OutboxDispatcherTest {
         final OutboxDispatcher dispatcher = new OutboxDispatcher(outboxDispatchPort,
             outboxEventPayloadDeserializerPort,
             cloudEventFactory,
-            cloudEventPublisher);
+            cloudEventPublisher, retryPolicy);
 
         org.assertj.core.api.Assertions.assertThatThrownBy(() -> dispatcher.dispatch(10))
             .isSameAs(failure);
@@ -142,7 +145,7 @@ class OutboxDispatcherTest {
         final OutboxDispatcher dispatcher = new OutboxDispatcher(outboxDispatchPort,
             outboxEventPayloadDeserializerPort,
             cloudEventFactory,
-            cloudEventPublisher);
+            cloudEventPublisher, retryPolicy);
 
         org.assertj.core.api.Assertions.assertThatThrownBy(() -> dispatcher.dispatch(10))
             .isSameAs(failure);
@@ -159,5 +162,7 @@ class OutboxDispatcherTest {
 
         assertThat(result).isNotNull();
     }
+
+
 
 }
